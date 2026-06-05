@@ -20,9 +20,15 @@ htmlcov/
 .venv/
 venv/
 env/
+node_modules/
+dist/
+build/
 
 Dockerfile
 docker-compose*.yml
+
+.idea/
+.vscode/
 
 README.md
 tests/

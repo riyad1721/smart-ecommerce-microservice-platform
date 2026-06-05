@@ -17,9 +17,15 @@ htmlcov/
 .venv/
 venv/
 env/
+node_modules/
+dist/
+build/
 
 tests/
 migrations/__pycache__/
+
+.idea/
+.vscode/
 
 Dockerfile*
 README.md

@@ -1,0 +1,150 @@
+global:
+  imageRegistry: ""
+  imagePullSecrets: []
+  imagePullPolicy: IfNotPresent
+  environment: production
+
+  databaseUrl: "postgresql://postgres:postgres@postgres-service:5432/smart_ecommerce_db"
+  rabbitmqUrl: "amqp://guest:guest@rabbitmq-service:5672/"
+  rabbitmqExchange: "ecommerce.events"
+  jwtAlgorithm: "HS256"
+
+secrets:
+  create: true
+  jwtSecretKey: "change-this-secret-key"
+  postgresPassword: "postgres"
+  rabbitmqPassword: "guest"
+  databaseUrl: ""
+  rabbitmqUrl: ""
+
+config:
+  postgresHost: "postgres-service"
+  postgresPort: "5432"
+  postgresUser: "postgres"
+  postgresDb: "smart_ecommerce_db"
+  rabbitmqHost: "rabbitmq-service"
+  rabbitmqPort: "5672"
+  rabbitmqUser: "guest"
+  apiV1Prefix: "/api/v1"
+  jwtAccessTokenExpireMinutes: "60"
+  orderCreatedRoutingKey: "order.created"
+  paymentCompletedRoutingKey: "payment.completed"
+  paymentFailedRoutingKey: "payment.failed"
+  paymentOrderCreatedQueue: "payment_order_created_queue"
+  notificationQueue: "notification-service-queue"
+  enableRabbitmqConsumer: "true"
+  rabbitmqEnabled: "true"
+
+postgres:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: postgres
+    tag: "16"
+  service:
+    type: ClusterIP
+    port: 5432
+  resources: {}
+
+rabbitmq:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: rabbitmq
+    tag: "3-management"
+  service:
+    type: ClusterIP
+    amqpPort: 5672
+    managementPort: 15672
+  resources: {}
+
+frontend:
+  replicaCount: 1
+  image:
+    repository: riyad72/ecommerce-frontend
+    tag: v2
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 8080
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+auth:
+  replicaCount: 1
+  image:
+    repository: riyad72/auth-service
+    tag: v3
+  service:
+    type: ClusterIP
+    port: 8000
+    targetPort: 8000
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+product:
+  replicaCount: 1
+  image:
+    repository: riyad72/product-service
+    tag: v3
+  service:
+    type: ClusterIP
+    port: 8001
+    targetPort: 8001
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+order:
+  replicaCount: 1
+  image:
+    repository: riyad72/order-service
+    tag: v3
+  service:
+    type: ClusterIP
+    port: 8002
+    targetPort: 8002
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+payment:
+  replicaCount: 1
+  image:
+    repository: riyad72/payment-service
+    tag: v3
+  service:
+    type: ClusterIP
+    port: 8004
+    targetPort: 8004
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+notification:
+  replicaCount: 1
+  image:
+    repository: riyad72/notification-service
+    tag: v3
+  service:
+    type: ClusterIP
+    port: 8005
+    targetPort: 8005
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations: {}
+  host: ecommerce.local
+  tls: []

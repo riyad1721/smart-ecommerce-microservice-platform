@@ -19,6 +19,9 @@ venv/
 .venv/
 env/
 .envrc
+node_modules/
+dist/
+build/
 
 .idea/
 .vscode/

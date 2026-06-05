@@ -25,6 +25,7 @@ env/
 
 build/
 dist/
+node_modules/
 *.egg-info/
 
 README.md

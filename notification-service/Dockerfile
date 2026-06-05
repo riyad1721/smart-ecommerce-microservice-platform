@@ -1,4 +1,4 @@
-ARG PYTHON_VERSION=3.12
+ARG PYTHON_VERSION=3.11
 
 FROM python:${PYTHON_VERSION}-slim-bookworm AS builder
 
@@ -14,7 +14,8 @@ ENV PATH="/opt/venv/bin:$PATH"
 
 COPY requirements.txt .
 RUN pip install --upgrade pip setuptools wheel \
-    && pip install --requirement requirements.txt
+    && pip install --no-cache-dir --requirement requirements.txt \
+    && pip uninstall -y pip setuptools wheel
 
 
 FROM python:${PYTHON_VERSION}-slim-bookworm AS runtime

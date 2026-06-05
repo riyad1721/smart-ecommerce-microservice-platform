@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.7
 
-ARG NODE_IMAGE=node:22-alpine
-ARG NGINX_IMAGE=nginxinc/nginx-unprivileged:stable-alpine
+ARG NODE_IMAGE=node:20-alpine
+ARG NGINX_IMAGE=nginx:alpine
 
 FROM ${NODE_IMAGE} AS deps
 WORKDIR /app
@@ -32,13 +32,11 @@ FROM ${NGINX_IMAGE} AS runtime
 ENV NGINX_ENTRYPOINT_QUIET_LOGS=1
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-COPY --from=build --chown=101:101 /app/dist /usr/share/nginx/html
+COPY --from=build /app/dist /usr/share/nginx/html
 
 EXPOSE 8080
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
   CMD wget -qO- http://127.0.0.1:8080/healthz || exit 1
-
-USER 101
 
 CMD ["nginx", "-g", "daemon off;"]

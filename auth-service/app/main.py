@@ -1,4 +1,9 @@
+import logging
+import time
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1.routes import auth_routes, health_routes
 from app.core.config import settings
@@ -7,19 +12,37 @@ from app.infrastructure.database.base import Base
 from app.infrastructure.database.session import engine
 
 # Important: import models before create_all
-from app.infrastructure.database import models
-from fastapi.middleware.cors import CORSMiddleware
-
+from app.infrastructure.database import models  # noqa: F401
 
 
 configure_logging()
+logger = logging.getLogger(__name__)
 
-Base.metadata.create_all(bind=engine)
+
+def create_database_tables() -> None:
+    for attempt in range(1, 11):
+        try:
+            Base.metadata.create_all(bind=engine)
+            logger.info("Database tables created/verified.")
+            return
+        except Exception:
+            logger.exception("Database table creation failed on attempt %s/10.", attempt)
+            if attempt == 10:
+                raise
+            time.sleep(3)
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    create_database_tables()
+    yield
+
 
 app = FastAPI(
     title=settings.APP_NAME,
     version="1.0.0",
-    description="Authentication service for Smart E-Commerce Microservice Platform"
+    description="Authentication service for Smart E-Commerce Microservice Platform",
+    lifespan=lifespan,
 )
 app.add_middleware(
     CORSMiddleware,

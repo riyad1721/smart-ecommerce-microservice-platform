@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-notification
+  labels:
+    app.kubernetes.io/name: notification
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  type: {{ .Values.notification.service.type }}
+  ports:
+    - name: http
+      port: {{ .Values.notification.service.port }}
+      targetPort: http
+  selector:
+    app.kubernetes.io/name: notification
+    app.kubernetes.io/instance: {{ .Release.Name }}

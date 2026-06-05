@@ -1,9 +1,17 @@
 node_modules
 dist
+build
+.venv
+venv
+__pycache__
+*.pyc
 .git
 .gitignore
 .env
 .env.*
+.pytest_cache
+.idea
+.vscode
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

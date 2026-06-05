@@ -23,6 +23,9 @@ docker-compose*.yaml
 venv/
 .venv/
 env/
+node_modules/
+dist/
+build/
 
 *.log
 *.sqlite
